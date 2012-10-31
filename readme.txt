@@ -17,6 +17,7 @@ DineApp is a free online reservation service provided by DineApp.com. By integra
 
 
 Features include:
+
 * Booking widget, which allows customers to make reservation on your Wordpress site.
 * Show restaurant availability on a given date
 * Customized booking tab to show more information and recent restaurant events
