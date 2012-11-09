@@ -46,7 +46,7 @@ Did I mention that this app is free, too?
 
 
 = If I got too many reservations on one date, how do I new reservations from being made =
-You can stop new reservations from being made in the DineApp iPhone app. If you don't use this iPhone app, you can also set it up in [DineApp website](http://www.dineapp.com).
+You can stop new reservations from being made in the DineApp iPhone app. If you don't use this iPhone app, you can also set it up in [DineApp website](http://www.dineapp.com/?utm_campaign=dineapp_intro&utm_source=wp_plugin_directory&utm_medium=app_intro).
 
 
 == Screenshots ==
