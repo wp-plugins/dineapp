@@ -3,7 +3,7 @@ Contributors: dineapp
 Tags: online reservations, restaurant booking, social networks, reservation management
 Requires at least: 3.0.1
 Tested up to: 3.4
-Stable tag: 1.0.3
+Stable tag: 1.0.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -60,4 +60,13 @@ You can stop new reservations from being made in the DineApp iPhone app. If you 
 = 1.0.1 =
 * provide booking tab
 * provide booking sidebar widget
+
+= 1.0.2 =
+* fix bug
+
+= 1.0.3 =
+* update description
+
+= 1.0.4 =
+* backward compatible for php < 5.3
 

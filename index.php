@@ -7,8 +7,8 @@ Version: 1.0
 Author: DineApp Inc.
 Author URI: http://www.dineapp.com/
 */
-require_once dirname(__FILE__).'/config/config.php';
-require_once __DIR__ . '/admin/DineApp.php';
+require_once dirname(__FILE__) . '/config/config.php';
+require_once dirname(__FILE__) . '/admin/DineApp.php';
 
 // register sidebar
 // TODO: check if sidebar widget is enabled
