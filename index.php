@@ -3,7 +3,7 @@
 Plugin Name: DineApp
 Plugin URI: http://www.dineapp.com/
 Description: Restaurant online booking service.
-Version: 1.0
+Version: 1.1.1
 Author: DineApp Inc.
 Author URI: http://www.dineapp.com/
 */
