@@ -136,6 +136,7 @@ class DineApp
             'server_url' => $_POST['da_server_url'],
         );
         self::save_tab_config($tab_config);
+        self::install_booking_tab();
 
         // widget config
         $widget_config = array(
@@ -152,10 +153,10 @@ class DineApp
     {
         // update tab configs
         $tab_config = self::get_tab_config();
-        if ((isset($_POST['tab_enable']) && 
-            intval($_POST['tab_enable']) == 1) ) {
+        if ( isset($_POST['tab_enable']) && 
+            intval($_POST['tab_enable']) == 1) {
             $tab_config['enable'] = 1;
-            DineApp::install_booking_tab();
+
         } else {
             $tab_config['enable'] = 0;
             DineApp::uninstall_booking_tab();
@@ -165,6 +166,11 @@ class DineApp
             self::set_tab_title($_POST['tab_title']);
         }
         self::save_tab_config($tab_config);
+
+        // install tab if not installed yet
+        if ($tab_config['enable'] == 1 && !$tab_config['post_id']) {
+            DineApp::install_booking_tab();
+        }
 
         // update widget configs
         $widget_config = self::get_widget_config();
@@ -217,13 +223,13 @@ class DineApp
 
     public static function install_booking_tab()
     {
+        $dineapp_config = $GLOBALS['DINEAPP']['config'];
         $tab_config = self::get_tab_config();
         if ( !$tab_config['post_id'] ) {
             global $current_user;
             $partner_page_name = $tab_config['partner_page_name'];
-            $server_url = $tab_config['server_url'];
             $config_page_html = <<<EOD
-<iframe id="dineapp_tab_booking_iframe" src="{$server_url}/tab_booking/tab_booking.php?page_name={$partner_page_name}" width="700" height="600" border="0" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+<iframe id="dineapp_tab_booking_iframe" src="{$dineapp_config['TAB_WIDGET_URL']}?page_name={$partner_page_name}" width="700" height="600" border="0" marginwidth="0" marginheight="0" frameborder="0"></iframe>
 EOD;
 
             $tab_title = 
@@ -279,7 +285,7 @@ EOD;
 
     public static function on_activated()
     {
-        self::install_booking_tab();
+        // self::install_booking_tab();
     }
 
 
@@ -420,13 +426,10 @@ EOD;
 
     public static function display_sidebar_widget($args, $widget_config)
     {
-        // var_dump($widget_config);
-        // extract($args);
         $dineapp_config = $GLOBALS['DINEAPP']['config'];
         if ( $widget_config['enable'] == 1 ) {
             // get widget configs
             $widget_code = $widget_config['widget_code'];
-            $server_url = $widget_config['server_url'];
 
             // display widget
             echo $before_widget;
