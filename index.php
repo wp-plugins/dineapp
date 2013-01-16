@@ -3,7 +3,7 @@
 Plugin Name: DineApp
 Plugin URI: http://www.dineapp.com/
 Description: Restaurant online booking service.
-Version: 1.1.1
+Version: 1.1.2
 Author: DineApp Inc.
 Author URI: http://www.dineapp.com/
 */
@@ -15,12 +15,8 @@ add_action('admin_menu', array('DineApp', 'register_admin_panel'));
 
 // register activation & deactivation hook
 $pluginMainFile = WP_PLUGIN_DIR . '/dineapp/index.php';
-register_activation_hook( $pluginMainFile, function(){
-    DineApp::on_activated();
-});
-register_deactivation_hook($pluginMainFile, function(){
-    DineApp::on_deactivated();
-});
+register_activation_hook( $pluginMainFile, array('DineApp', 'on_activated'));
+register_deactivation_hook($pluginMainFile, array('DineApp', 'on_deactivated'));
 
 // register widget
 DineApp::register_sidebar_widget();
