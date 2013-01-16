@@ -3,56 +3,21 @@
 Plugin Name: DineApp
 Plugin URI: http://www.dineapp.com/
 Description: Restaurant online booking service.
-Version: 1.0
+Version: 1.1.3
 Author: DineApp Inc.
 Author URI: http://www.dineapp.com/
 */
-require_once dirname(__FILE__).'/config/config.php';
-require_once __DIR__ . '/admin/DineApp.php';
+require_once dirname(__FILE__) . '/config/config.php';
+require_once dirname(__FILE__) . '/class-dineapp.php';
 
-// register sidebar
-// TODO: check if sidebar widget is enabled
+// register admin page
+add_action('admin_menu', array('DineApp', 'register_admin_panel'));
 
-function da_register_booking_widget() {
-    $widget_option = array(
-        'description' => 'DineApp Widget provide online booking functions'
-    );
+// register activation & deactivation hook
+$pluginMainFile = WP_PLUGIN_DIR . '/dineapp/index.php';
+register_activation_hook( $pluginMainFile, array('DineApp', 'on_activated'));
+register_deactivation_hook($pluginMainFile, array('DineApp', 'on_deactivated'));
 
-    $widget_params = array(
-        'DINEAPP_CONFIG' => $GLOBALS['DINEAPP']['config']
-    );
+// register widget
+DineApp::register_sidebar_widget();
 
-    wp_register_sidebar_widget(
-        'DineApp',        // your unique widget id
-        'Online Booking (by DineApp)',          // widget name
-        'dineapp_widget_display',  // callback function
-        $widget_option,
-        $widget_params
-    );
-}
-
-function dineapp_widget_display($args, $params) {
-   extract($args);
-   if (function_exists('da_get_option') && da_get_option('show_widget') == 1) {
-       // get widget configs
-       $DINEAPP_CONFIG = $params['DINEAPP_CONFIG'];
-       $widgetCode = da_get_option('widget_code');
-       $serverUrl = da_get_option('server_url');
-
-       // display widget
-       echo $before_widget;
-       echo $before_title . $widget_name . $after_title;
-       echo $after_widget;
-
-       // print some HTML for the widget to display here
-       echo <<<EOD
-    <iframe src="{$DINEAPP_CONFIG['SIDEBAR_WIDGET_URL']}?code={$widgetCode}" width="350" height="410" border="0" marginwidth="0" marginheight="0" frameborder="0"></iframe>
-EOD;
-   }
-}
-
-
-// admin page
-// add_action('admin_menu', array('DineApp', 'main'));
-add_action('admin_menu', 'da_add_admin_page');
-da_register_booking_widget();
