@@ -65,6 +65,12 @@ Currently this plugin only support English. We are currently working on Dutch, G
 
 == Changelog ==
 
+= 1.1.2 =
+* support php 5.2
+
+= 1.1.1 =
+* bug fix
+
 = 1.1.0 =
 * allow customized widget title and tab title
 
