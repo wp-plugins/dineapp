@@ -18,6 +18,8 @@ class DineApp
     const OPTION_SHOW_TAB = 'show_tab';
     const OPTION_SHOW_WIDGET = 'show_widget';
 
+    const DEFAULT_LOCALE = 'en_US';
+
     public static function get_template_path()
     {
         return dirname(__FILE__) . '/templates/';
@@ -96,11 +98,26 @@ class DineApp
         $widget_config['enable_checked'] = 
             $widget_config['enable'] == 1 ? 'checked' : '';
 
+        // default locale
+        $default_locale = "";
+        if (isset($app_config['default_locale'])) {
+            $default_locale = $app_config['default_locale'];
+        }
+        $languages = self::get_supported_languages();
+        $language_options = array_values($languages);
+        $language_values = array_keys($languages);
+        $language_option_str = self::createSelectOptions(
+            $language_options, 
+            $default_locale,
+            $language_values
+        );
+
         // render html in admin-template
         $VARS = array(
             'app_config' => $app_config,
             'tab_config' => $tab_config,
             'widget_config' => $widget_config,
+            'language_option_str' => $language_option_str,
         );
         $template = self::get_template_path() . 'admin-template.php';
 
@@ -149,29 +166,102 @@ class DineApp
     }
 
 
-    public static function update_configs()
+    public static function update_app_configs()
     {
-        // update tab configs
-        $tab_config = self::get_tab_config();
-        if ( isset($_POST['tab_enable']) && 
-            intval($_POST['tab_enable']) == 1) {
-            $tab_config['enable'] = 1;
-
-        } else {
-            $tab_config['enable'] = 0;
-            DineApp::uninstall_booking_tab();
+        // save app configs
+        $app_config = self::get_app_config();
+        $supported_languages = self::get_supported_languages();
+        if (isset($_POST['default_locale']) &&
+            $_POST['default_locale'] !== $app_config['default_locale'] &&
+            array_key_exists($_POST['default_locale'], $supported_languages)) {
+            $app_config['default_locale'] = $_POST['default_locale'];
+            self::save_app_config($app_config);
         }
+    }
+
+
+    public static function update_tab_configs() 
+    {
+        $app_config = self::get_app_config();
+        $tab_config = self::get_tab_config();
+
+        // update locale
+        if ( isset( $app_config['default_locale'] ) ) {
+            if (!isset($tab_config['locale']) || $tab_config['locale'] !== $app_config['default_locale']) {
+                self::set_tab_locale($app_config['default_locale']);
+            }
+        }
+        
+        // update tab title
         if ( isset($_POST['tab_title']) && ($tab_config['title'] != $_POST['tab_title']) ) {
-            $tab_config['title'] = $_POST['tab_title'];
             self::set_tab_title($_POST['tab_title']);
         }
-        self::save_tab_config($tab_config);
 
-        // install tab if not installed yet
-        if ($tab_config['enable'] == 1 && !$tab_config['post_id']) {
-            DineApp::install_booking_tab();
+        // install or activate
+        if ( isset($_POST['tab_enable']) && 
+            intval($_POST['tab_enable']) == 1) {
+
+            // activate post if  already has one or install tab if not installed yet
+            if ( isset($tab_config['post_id']) && self::post_id_exists($tab_config['post_id']) ) {
+                self::activate_booking_tab();
+            } else {
+                self::install_booking_tab();
+            }
+        } else {
+            self::inactivate_booking_tab();
+        }
+    }
+
+
+    public static function activate_post($post_id)
+    {
+        $post = array(
+            'ID' => $post_id,
+            'post_status' => 'publish',
+        );
+        wp_update_post($post);
+    }
+
+    public static function inactivate_post($post_id)
+    {
+        $post = array(
+            'ID' => $post_id,
+            'post_status' => 'pending',
+        );
+        wp_update_post($post);
+    }
+
+
+    public static function inactivate_booking_tab()
+    {
+        $tab_config = self::get_tab_config();
+        if ( isset($tab_config['post_id']) && self::post_id_exists($tab_config['post_id'])) {
+            self::inactivate_post($tab_config['post_id']);
         }
 
+        // update tab config
+        $tab_config['enable'] = 0;
+        self::save_tab_config($tab_config);
+    }
+
+    public static function activate_booking_tab()
+    {
+        $tab_config = self::get_tab_config();
+        self::activate_post($tab_config['post_id']);
+
+        // update tab config
+        $tab_config['enable'] = 1;
+        self::save_tab_config($tab_config);
+    }
+
+    public static function post_id_exists($post_id)
+    {
+        $post = get_post($post_id);
+        return !is_null($post);
+    }
+
+    public static function update_widget_configs() 
+    {
         // update widget configs
         $widget_config = self::get_widget_config();
         if ((isset($_POST['widget_enable']) && 
@@ -184,6 +274,13 @@ class DineApp
             $widget_config['title'] = $_POST['widget_title'];
         }
         self::save_widget_config($widget_config);
+    }
+
+    public static function update_configs()
+    {
+        self::update_app_configs();
+        self::update_tab_configs();
+        self::update_widget_configs();
     }
 
 
@@ -221,42 +318,51 @@ class DineApp
         }
     }
 
-    public static function install_booking_tab()
+
+    public function get_tab_post_content($userConfig)
     {
-        $dineapp_config = $GLOBALS['DINEAPP']['config'];
-        $tab_config = self::get_tab_config();
-        if ( !$tab_config['post_id'] ) {
-            global $current_user;
-            $partner_page_name = $tab_config['partner_page_name'];
-            $config_page_html = <<<EOD
-<iframe id="dineapp_tab_booking_iframe" src="{$dineapp_config['TAB_WIDGET_URL']}?page_name={$partner_page_name}" width="700" height="600" border="0" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+        // resolve configs
+        $defaultConfig =  array(
+            "partner_page_name" => null,
+            "locale" => self::DEFAULT_LOCALE,
+        );
+        $config = array_merge($defaultConfig, $userConfig);
+
+        // build query string 
+        $query_string = http_build_query( array(
+            'page_name' => $config['partner_page_name'],
+            'locale' => $config['locale'],
+        ));
+        $tab_widget_url = $GLOBALS['DINEAPP']['config']['TAB_WIDGET_URL'] . "?" . $query_string;
+
+        // genearate post content
+        $tab_post_content = <<<EOD
+<iframe id="dineapp_tab_booking_iframe" src="{$tab_widget_url}" width="700" height="1000" border="0" marginwidth="0" marginheight="0" frameborder="0"></iframe>
 EOD;
 
-            $tab_title = 
-            $tab_booking_post = array(
-                'post_title'    => $tab_config['title'],
-                'post_content'  => $config_page_html,
-                'comment_status' => 'close',
-                'post_status'   => 'publish',
-                'post_author'   => $current_user->id,
-                'post_type'     => 'page',
-            );
+        return $tab_post_content;
+    }
 
-            // Insert the post into the database
-            $post_id = wp_insert_post( $tab_booking_post );
+    public static function install_booking_tab()
+    {
+        global $current_user;
+        $tab_config = self::get_tab_config();
+        $post_content = self::get_tab_post_content($tab_config);
 
-            // update tab id
-            $tab_config['post_id'] = $post_id;
-            self::save_tab_config($tab_config);
-        }
-        else {
-            $tab_booking_post = array(
-                'ID' => $tab_config['post_id'],
-                'post_title'    => $tab_config['title'],
-                'post_status' => 'publish',
-            );
-            wp_update_post($tab_booking_post);
-        }
+        $tab_booking_post = array(
+            'post_title'    => $tab_config['title'],
+            'post_content'  => $post_content,
+            'comment_status' => 'close',
+            'post_status'   => 'publish',
+            'post_author'   => $current_user->id,
+            'post_type'     => 'page',
+        );
+
+        // Insert the post into the database
+        $post_id = wp_insert_post( $tab_booking_post );
+        $tab_config['post_id'] = $post_id;
+
+        self::save_tab_config($tab_config);
     }
 
 
@@ -348,13 +454,27 @@ EOD;
     public static function set_tab_title($tab_title)
     {
         $tab_config = self::get_tab_config();
+        $tab_config['title'] = $tab_title;
         $tab_booking_post = array(
             'ID' => $tab_config['post_id'],
             'post_title'    => $tab_title,
         );
         wp_update_post($tab_booking_post);
+        self::save_tab_config($tab_config);
     }
 
+
+    public static function set_tab_locale($locale)
+    {
+        $tab_config = self::get_tab_config();
+        $tab_config['locale'] = $locale;
+        $tab_booking_post = array(
+            'ID' => $tab_config['post_id'],
+            'post_content'    => self::get_tab_post_content($tab_config),
+        );
+        wp_update_post($tab_booking_post);
+        self::save_tab_config($tab_config);
+    }
 
     public function get_default_widget_config()
     {
@@ -405,8 +525,6 @@ EOD;
 
     public static function register_sidebar_widget()
     {
-        $widget_config = self::get_widget_config();
-
         $widget_params = array(
             'DINEAPP_CONFIG' => $GLOBALS['DINEAPP']['config']
         );
@@ -428,6 +546,13 @@ EOD;
     {
         $dineapp_config = $GLOBALS['DINEAPP']['config'];
         if ( $widget_config['enable'] == 1 ) {
+            // load default locale
+            $default_locale = self::DEFAULT_LOCALE;
+            $app_config = self::get_app_config();
+            if (isset($app_config['default_locale'])) {
+                $default_locale = $app_config['default_locale'];
+            }
+
             // get widget configs
             $widget_code = $widget_config['widget_code'];
 
@@ -438,9 +563,40 @@ EOD;
 
             // print some HTML for the widget to display here
             echo <<<EOD
-<iframe src="{$dineapp_config['SIDEBAR_WIDGET_URL']}?code={$widget_code}" width="350" height="410" border="0" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+<iframe src="{$dineapp_config['SIDEBAR_WIDGET_URL']}?code={$widget_code}&locale={$default_locale}" width="350" height="410" border="0" marginwidth="0" marginheight="0" frameborder="0"></iframe>
 EOD;
         }
+    }
+
+
+    public static function get_supported_languages()
+    {
+        return array(
+            'en_US' => 'English',
+            'nl_NL' => 'Netherland',
+        );
+    }
+
+    public static function createSelectOptions($options, $selected=null, $values=null)
+    {
+        if (is_null($values)) {
+            $values = $options;
+        }
+        if (count($options) != count($values)) {
+            return false;
+        }
+        $menu = "";
+        for ($i=0;$i<count($options);$i++) {
+            $menu .= '<option value="'.$values[$i].'"';
+            if ($values[$i] == $selected) {
+                $menu .= ' selected="selected"';
+            }
+            $menu .= '>';
+            $menu .= $options[$i];
+            $menu .= '</option>';
+        }
+
+        return $menu;
     }
 
 }

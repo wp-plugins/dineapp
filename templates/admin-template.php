@@ -5,6 +5,25 @@ DineApp App Id: <?php echo $VARS['app_config']['id']; ?><strong>
 -->
   <div>
     <form action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post"  class="form-horizontal">
+
+      <!-- general setting -->
+      <h2>General Settings</h2>
+      <table class="form-table">
+        <tbody>
+        <!-- default language -->
+        <tr valign="top">
+          <th scope="row"><label for="tab_title">Default Language</label></th>
+          <td>
+            <select name="default_locale">
+              <?php echo $VARS['language_option_str']; ?>
+            </select>
+            <a href='http://dineapp.uservoice.com/forums/191177-general' title='suggest other language' target="_blank">Suggest other language?</a>
+            <p class="description"></p></td>
+        </tr>
+
+        </tbody>
+      </table>
+
       <h2>Booking Tab Settings</h2>
       <table class="form-table">
         <tbody>
@@ -52,9 +71,13 @@ DineApp App Id: <?php echo $VARS['app_config']['id']; ?><strong>
 
         </tbody>
       </table>
-      <p class="submit"><input type="submit" name="submit" id="submit" class="button-primary" value="Save Changes"></p>
+      <p class="submit">
+          <input type="submit" name="submit" id="submit" class="button-primary" value="Save Changes">
+          <a href='http://dineapp.uservoice.com/forums/191177-general' title='give feedback to dineapp' target="_blank">Give feedback to DineApp</a>
+      </p>
       <input type="hidden" name="da_action" value="update_configs" />
     </form>
+
   </div>
 </div>
 
