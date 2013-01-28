@@ -1,0 +1,68 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+DINEAPP_CONFIG	class-dineapp.php	/^            $DINEAPP_CONFIG = $params['DINEAPP_CONFIG'];$/;"	v
+DINEAPP_PLUGIN_NAME	class-dineapp.php	/^define("DINEAPP_PLUGIN_NAME", "dineapp");$/;"	d
+DineApp	class-dineapp.php	/^class DineApp$/;"	c
+DineApp.form	admin/js/admin_login.js	/^var DineApp = {$/;"	p
+DineApp.getPartnerInfo	admin/js/admin_login.js	/^};$/;"	f
+DineApp.getPartnerInfo.ajaxOption.type	admin/js/admin_login.js	/^    var ajaxOption = {$/;"	p
+DineApp.getPartnerInfo.ajaxOption.url	admin/js/admin_login.js	/^          type: 'GET',$/;"	p
+DineApp.submitPartnerInfo	admin/js/admin_login.js	/^};$/;"	f
+VARS	class-dineapp.php	/^        $VARS = array($/;"	v
+VARS	class-dineapp.php	/^        $VARS = array();$/;"	v
+appId	class-dineapp.php	/^        $appId = self::da_get_option('app_id');$/;"	v
+config_page_html	class-dineapp.php	/^            $config_page_html = <<<EOD$/;"	v
+config_page_html	class-dineapp.php	/^        $config_page_html = self::easy_render($VARS, $template);$/;"	v
+configs	class-dineapp.php	/^        $configs = array($/;"	v
+daKey	class-dineapp.php	/^        $daKey = 'da_' . $key;$/;"	v
+da_add_admin_page	class-dineapp.php	/^    public static function da_add_admin_page()$/;"	f
+da_admin_setting	class-dineapp.php	/^    public static function da_admin_setting()$/;"	f
+da_disable_tab	class-dineapp.php	/^    public static function da_disable_tab()$/;"	f
+da_get_option	class-dineapp.php	/^    public static function da_get_option($key)$/;"	f
+da_get_plugin_name	class-dineapp.php	/^    public static function da_get_plugin_name() $/;"	f
+da_save_option	class-dineapp.php	/^    public static function da_save_option($key, $value)$/;"	f
+da_save_options	class-dineapp.php	/^    public static function da_save_options($data)$/;"	f
+da_show_config_page	class-dineapp.php	/^    public static function da_show_config_page($msg = null) $/;"	f
+da_show_forge_key_page	class-dineapp.php	/^    public static function da_show_forge_key_page()$/;"	f
+da_show_tab	class-dineapp.php	/^            $da_show_tab = 0;$/;"	v
+da_show_tab	class-dineapp.php	/^            $da_show_tab = 1;$/;"	v
+da_show_tab	class-dineapp.php	/^    public static function da_show_tab()$/;"	f
+da_show_widget	class-dineapp.php	/^            $da_show_widget = 0;$/;"	v
+da_show_widget	class-dineapp.php	/^            $da_show_widget = 1;$/;"	v
+data	class-dineapp.php	/^        $data = array($/;"	v
+dineapp_register_widget	class-dineapp.php	/^    public static function dineapp_register_widget()$/;"	f
+dineapp_widget_display	class-dineapp.php	/^    public static function dineapp_widget_display($args, $params)$/;"	f
+easy_render	class-dineapp.php	/^    public function easy_render($VARS, $filename) {$/;"	f
+gen_key	class-dineapp.php	/^    public static function gen_key()$/;"	f
+get_template_path	class-dineapp.php	/^    public static function get_template_path()$/;"	f
+get_widget_name	class-dineapp.php	/^    public static function get_widget_name() $/;"	f
+handle_dineapp_action	class-dineapp.php	/^    public static function handle_dineapp_action()$/;"	f
+key	class-dineapp.php	/^        foreach($data as $key => $value) {$/;"	v
+myPost	class-dineapp.php	/^            $myPost = array($/;"	v
+on	templates/admin-template.php	/^    Enable widget to provide booking function on your sidebar.$/;"	f
+on_activated	class-dineapp.php	/^    public static function on_activated()$/;"	f
+on_deactivated	class-dineapp.php	/^    public static function on_deactivated()$/;"	f
+partnerPageName	class-dineapp.php	/^            $partnerPageName = self::da_get_option('partner_page_name');$/;"	v
+partnerPageName	class-dineapp.php	/^        $partnerPageName = self::da_get_option('partner_page_name');$/;"	v
+pluginMainFile	index.php	/^$pluginMainFile = WP_PLUGIN_DIR . '\/dineapp\/index.php';$/;"	v
+postId	class-dineapp.php	/^            $postId = wp_insert_post( $myPost );$/;"	v
+save_config	class-dineapp.php	/^    public static function save_config()$/;"	f
+serverUrl	class-dineapp.php	/^            $serverUrl = DineApp::da_get_option('server_url');$/;"	v
+serverUrl	class-dineapp.php	/^            $serverUrl = self::da_get_option('server_url');$/;"	v
+show_tab_checked	class-dineapp.php	/^        $show_tab_checked = self::da_get_option('show_tab') == 1 ? 'checked' : '';$/;"	v
+show_widget	class-dineapp.php	/^        $show_widget = self::da_get_option('show_widget');$/;"	v
+show_widget	class-dineapp.php	/^        if ( $show_widget == 1 ) {$/;"	v
+show_widget_checked	class-dineapp.php	/^        $show_widget_checked = self::da_get_option('show_widget') == 1 ? 'checked' : '';$/;"	v
+tabId	class-dineapp.php	/^        $tabId = self::da_get_option('tab_id');$/;"	v
+tabId	class-dineapp.php	/^        if ( $tabId == null ) {$/;"	v
+template	class-dineapp.php	/^        $template = self::get_template_path() . 'admin-template.php';$/;"	v
+template	class-dineapp.php	/^        $template = self::get_template_path() . 'forge-key-template.php';$/;"	v
+widgetCode	class-dineapp.php	/^            $widgetCode = DineApp::da_get_option('widget_code');$/;"	v
+widget_name	class-dineapp.php	/^            $widget_name = self::get_widget_name();$/;"	v
+widget_namy	class-dineapp.php	/^        $widget_namy = self::get_widget_name();$/;"	v
+widget_option	class-dineapp.php	/^        $widget_option = array($/;"	v
+widget_params	class-dineapp.php	/^        $widget_params = array($/;"	v

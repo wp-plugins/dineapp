@@ -44,7 +44,7 @@ function da_show_forge_key_page()
         </div>
       </div>
         <button type="submit" class="btn btn-large btn-primary" type="button" >Start Using</button>
-        <a href="http://www.dineapp.com/register/" target="_blank">Create a DineApp</a>
+        <a href="http://www.dineapp.com/" target="_blank">Create a DineApp</a>
             <input type="hidden" name="da_action" value="da_gen_key" />
             <input id="da_partner_id" type="hidden" name="da_partner_id" value="" />
             <input id="da_partner_page_name" type="hidden" name="da_partner_page_name" value="" />
