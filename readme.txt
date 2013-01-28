@@ -3,7 +3,7 @@ Contributors: dineapp
 Tags: online reservations, restaurant booking, social networks, reservation management
 Requires at least: 3.0.1
 Tested up to: 3.4
-Stable tag: 1.2.0
+Stable tag: ${RELEASE_NAME}
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -64,6 +64,9 @@ Currently this plugin only support English. We are currently working on Dutch, G
 3. Adjust the layout of the booking widget to fit into the existing theme
 
 == Changelog ==
+
+= 1.2.0 =
+* support locale Netherland (Dutch)
 
 = 1.1.3 =
 * avoid duplicated tab 
